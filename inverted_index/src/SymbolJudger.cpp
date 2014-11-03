@@ -1,10 +1,18 @@
 #include "SymbolJudger.h"
 #include <cstdio>
 #include <cstring>
+#include "IRDefine.h"
 
 const int LEN = 10;
 
-bool SymbolJudger::loadSymbols(char *filename)
+SymbolJudger::SymbolJudger()
+{
+	m_loaded = 0;
+	trie = new Trie(300);
+	this->loadSymbols(SYMBOL_FILE);
+}
+
+bool SymbolJudger::loadSymbols(const char *filename)
 {
 	if (m_loaded) return 1;
 	m_loaded = 1;
@@ -22,7 +30,9 @@ bool SymbolJudger::loadSymbols(char *filename)
 	char s[LEN];
 	while (fgets(s, LEN, fp))
 	{
-		bool ret = trie->insert(s, strlen(s), 1);
+		int len = strlen(s);
+		s[--len] = '\0';
+		bool ret = trie->insert(s, len, 1);
 		if (!ret) return 0;
 	}
 	return 1;
